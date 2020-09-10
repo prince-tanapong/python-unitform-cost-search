@@ -1,6 +1,4 @@
-from types import prepare_class
-
-
+import argparse
 import csv
 
 
@@ -101,7 +99,11 @@ class Untform(object):
 
 
 if __name__ == "__main__":
-    start_node = 'E'
-    end_node = 'J'
+    parser = argparse.ArgumentParser(description='Find shortest route.')
+    parser.add_argument('--file', type=str, help='file name')
+    args = parser.parse_args()
 
-    Untform('routes.csv', start_node, end_node).run()
+    start_node = input("What station are you getting on the train?: ")
+    end_node = input("What station are you getting off the train?: ")
+
+    Untform(args.file, start_node, end_node).run()
