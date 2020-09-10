@@ -16,9 +16,6 @@ class Node(object):
         return self.label == other.label
 
     def __repr__(self):
-        # str_format = "{}.{}" if self.expanded else "({}.{})"
-        # return str_format.format(self.label, self.f)
-
         return "{}.{}".format(self.label, self.cost)
 
 
