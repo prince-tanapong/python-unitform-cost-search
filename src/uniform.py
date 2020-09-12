@@ -17,7 +17,7 @@ class Node(object):
         return "{}.{}".format(self.label, self.cost)
 
 
-class Untform(object):
+class Uniform(object):
     def __init__(self, file_name, start_node, end_node):
         self.graph = self.load_graph(file_name)
         self.start_node = Node(start_node)
@@ -28,7 +28,7 @@ class Untform(object):
 
     def load_graph(self, file_name):
         graph = {}
-        with open('routes.csv') as csv_file:
+        with open(file_name) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for line in csv_reader:
                 if line[0] not in graph:
@@ -51,41 +51,22 @@ class Untform(object):
         path.reverse()
         return path
 
-    def show_summary(self):
-        last_expended_node = self.expanded_list[-1]
-        print()
-        print("======== Summary ========")
-        if last_expended_node == self.end_node:
-            path = self.find_path(last_expended_node)
-            print("Expand: ", " ".join(list(map(lambda x: str(x), self.expanded_list))))
-            print('Path: ', ' '.join(list(map(lambda x: x.label, path))))
-            print("Your Trip from {} to {} include {} stops and will take {} minutes".format(
-                self.start_node.label, self.end_node.label, len(path) - 2, last_expended_node.cost
-            ))
-        else:
-            print("No Routes from {} to {}".format(self.start_node.label, self.end_node.label))
-
     def run(self):
         self.priority_list.append(self.start_node)
 
         count = 0
         while(len(self.priority_list) > 0):
             count += 1
-            print()
-            print("\tInteration {}".format(count))
 
             self.priority_list = sorted(self.priority_list, key=lambda x: x.cost)
-            print('priority list: ', self.priority_list)
             expanding_node = self.priority_list.pop(0)
 
             if not self.valid_to_expand(expanding_node):
                 continue
 
             self.expanded_list.append(expanding_node)
-            print('expanded list: ', self.expanded_list)
 
             if self.end_node in self.expanded_list:
-                print("{} in list, found the solution".format(self.end_node.label))
                 break
 
             children_node = self.graph.get(expanding_node.label, [])
@@ -95,7 +76,12 @@ class Untform(object):
                 if not expanding_node.parent or expanding_node.parent != child_node:
                     self.priority_list.append(child_node)
 
-        self.show_summary()
+        last_expended_node = self.expanded_list[-1]
+        if last_expended_node == self.end_node:
+            path = self.find_path(last_expended_node)
+            return path
+        else:
+            return None
 
 
 if __name__ == "__main__":
@@ -106,4 +92,11 @@ if __name__ == "__main__":
     start_node = input("What station are you getting on the train?: ")
     end_node = input("What station are you getting off the train?: ")
 
-    Untform(args.file, start_node, end_node).run()
+    path = Uniform(args.file, start_node, end_node).run()
+    print()
+    if path:
+        print("Result: Your Trip from {} to {} include {} stops, and will take {} minutes".format(
+            start_node, end_node, len(path) - 2, path[-1].cost
+        ))
+    else:
+        print("Result: No Routes from {} to {}".format(start_node, end_node))
