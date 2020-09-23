@@ -33,7 +33,10 @@ class Uniform(object):
             for line in csv_reader:
                 if line[0] not in graph:
                     graph[line[0]] = []
+                if line[1] not in graph:
+                    graph[line[1]] = []
                 graph[line[0]].append(dict(label=line[1], cost=int(line[2])))
+                graph[line[1]].append(dict(label=line[0], cost=int(line[2])))
         return graph
 
     def valid_to_expand(self, node):
@@ -89,14 +92,16 @@ if __name__ == "__main__":
     parser.add_argument('--file', type=str, help='file name')
     args = parser.parse_args()
 
-    start_node = input("What station are you getting on the train?: ")
-    end_node = input("What station are you getting off the train?: ")
+    start_node = input("What is start node?: ")
+    end_node = input("What is goal node?: ")
 
     path = Uniform(args.file, start_node, end_node).run()
     print()
     if path:
-        print("Result: Your Trip from {} to {} include {} stops, and will take {} minutes".format(
-            start_node, end_node, len(path) - 2, path[-1].cost
-        ))
+        # print("Result: Your Trip from {} to {} include {} stops, and will take {} minutes".format(
+        #     start_node, end_node, len(path) - 2, path[-1].cost
+        # ))
+        path_labels = "->".join([n.label for n in path])
+        print("Path from {} to {} is {}, and have cost {}.".format(start_node, end_node, path_labels, path[-1].cost))
     else:
         print("Result: No Routes from {} to {}".format(start_node, end_node))

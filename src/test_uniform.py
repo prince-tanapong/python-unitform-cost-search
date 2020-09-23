@@ -26,14 +26,16 @@ class TestUniform(unittest.TestCase):
     ####
     def test_load_graph_should_return_data_structure_like_expected(self):
         expected = {
-            'A': [{'cost': 5, 'label': 'B'}, {'cost': 15, 'label': 'D'}],
-            'B': [{'cost': 5, 'label': 'C'}],
-            'C': [{'cost': 7, 'label': 'D'}],
-            'E': [{'cost': 5, 'label': 'F'}],
-            'F': [{'cost': 5, 'label': 'G'}],
-            'G': [{'cost': 10, 'label': 'H'}, {'cost': 20, 'label': 'J'}],
-            'H': [{'cost': 10, 'label': 'I'}],
-            'I': [{'cost': 5, 'label': 'J'}]}
+            'A': [{'label': 'B', 'cost': 5}, {'label': 'D', 'cost': 15}],
+            'B': [{'label': 'A', 'cost': 5}, {'label': 'C', 'cost': 5}],
+            'C': [{'label': 'B', 'cost': 5}, {'label': 'D', 'cost': 7}],
+            'D': [{'label': 'C', 'cost': 7}, {'label': 'A', 'cost': 15}],
+            'E': [{'label': 'F', 'cost': 5}],
+            'F': [{'label': 'E', 'cost': 5}, {'label': 'G', 'cost': 5}],
+            'G': [{'label': 'F', 'cost': 5}, {'label': 'H', 'cost': 10}, {'label': 'J', 'cost': 20}],
+            'H': [{'label': 'G', 'cost': 10}, {'label': 'I', 'cost': 10}],
+            'I': [{'label': 'H', 'cost': 10}, {'label': 'J', 'cost': 5}],
+            'J': [{'label': 'I', 'cost': 5}, {'label': 'G', 'cost': 20}]}
         self.assertDictEqual(self.uniform.graph, expected)
 
     ####
